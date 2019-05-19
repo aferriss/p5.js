@@ -1,4 +1,4 @@
-precision mediump float;
+precision highp float;
 
 attribute vec3 aPosition;
 attribute vec3 aNormal;
@@ -29,7 +29,8 @@ void main(void){
 
   vAmbientColor = vec3(0.0);
   for (int i = 0; i < 8; i++) {
-    if (uAmbientLightCount == i) break;
-    vAmbientColor += uAmbientColor[i];
+    if(i < uAmbientLightCount){
+      vAmbientColor += uAmbientColor[i];
+    }
   }
 }

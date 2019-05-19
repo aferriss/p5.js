@@ -1,4 +1,4 @@
-precision mediump float;
+precision highp float;
 varying vec3 vVertexNormal;
 uniform vec4 uMaterialColor;
 void main(void) {

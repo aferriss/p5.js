@@ -43,6 +43,7 @@ p5.RendererGL.prototype._freeBuffers = function(gId) {
   geometry.uvBuffer && gl.deleteBuffer(geometry.uvBuffer);
   geometry.indexBuffer && gl.deleteBuffer(geometry.indexBuffer);
   geometry.lineVertexBuffer && gl.deleteBuffer(geometry.lineVertexBuffer);
+  geometry.vertexColorBuffer && gl.deleteBuffer(geometry.vertexColorBuffer);
 };
 /**
  * createBuffers description
@@ -189,6 +190,51 @@ p5.RendererGL.prototype.createBuffers = function(gId, obj) {
       0
     );
   }
+
+  // initialize the stroke shader's 'aVertexColor' buffer, if used
+  if (this.strokeShader.attributes.aVertexColor) {
+    geometry.vertexColorBuffer = gl.createBuffer();
+
+    this._bindBuffer(
+      geometry.vertexColorBuffer,
+      gl.ARRAY_BUFFER,
+      obj.vertexColors,
+      Float32Array,
+      gl.STATIC_DRAW
+    );
+
+    this.strokeShader.enableAttrib(
+      this.strokeShader.attributes.aVertexColor.location,
+      4,
+      gl.FLOAT,
+      false,
+      0,
+      0
+    );
+  }
+
+  // initialize the fill shader's 'aVertexColor' buffer, if used
+  if (this.fillShader.attributes.aVertexColor) {
+    geometry.vertexColorBuffer = gl.createBuffer();
+
+    this._bindBuffer(
+      geometry.vertexColorBuffer,
+      gl.ARRAY_BUFFER,
+      obj.vertexColors,
+      Float32Array,
+      gl.STATIC_DRAW
+    );
+
+    this.fillShader.enableAttrib(
+      this.fillShader.attributes.aVertexColor.location,
+      4,
+      gl.FLOAT,
+      false,
+      0,
+      0
+    );
+  }
+
   fillShader.unbindShader();
   return geometry;
 };
@@ -225,6 +271,19 @@ p5.RendererGL.prototype.drawBuffers = function(gId) {
       this._bindBuffer(geometry.lineNormalBuffer, gl.ARRAY_BUFFER);
       strokeShader.enableAttrib(
         strokeShader.attributes.aDirection.location,
+        4,
+        gl.FLOAT,
+        false,
+        0,
+        0
+      );
+    }
+
+    // bind the stroke shader's 'aVertexColor' buffer
+    if (geometry.vertexColorBuffer) {
+      this._bindBuffer(geometry.vertexColorBuffer, gl.ARRAY_BUFFER);
+      strokeShader.enableAttrib(
+        strokeShader.attributes.aVertexColor.location,
         4,
         gl.FLOAT,
         false,
@@ -281,6 +340,20 @@ p5.RendererGL.prototype.drawBuffers = function(gId) {
       fillShader.enableAttrib(
         fillShader.attributes.aTexCoord.location,
         2,
+        gl.FLOAT,
+        false,
+        0,
+        0
+      );
+    }
+
+    // bind the fill shader's 'aVertexColor' buffer
+    if (geometry.vertexColorBuffer) {
+      // color buffer
+      this._bindBuffer(geometry.vertexColorBuffer, gl.ARRAY_BUFFER);
+      this.fillShader.enableAttrib(
+        this.fillShader.attributes.aVertexColor.location,
+        4,
         gl.FLOAT,
         false,
         0,

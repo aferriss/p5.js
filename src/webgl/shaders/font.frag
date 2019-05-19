@@ -1,5 +1,5 @@
 #extension GL_OES_standard_derivatives : enable
-precision highp float;
+precision mediump float;
 
 #if 0
   // simulate integer math using floats

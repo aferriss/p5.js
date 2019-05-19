@@ -1,4 +1,4 @@
-precision highp float;
+precision mediump float;
 
 uniform vec4 uMaterialColor;
 uniform sampler2D uSampler;

@@ -1,4 +1,4 @@
-precision mediump float;
+precision highp float;
 
 //uniform mat4 uModelViewMatrix;
 uniform mat4 uViewMatrix;
